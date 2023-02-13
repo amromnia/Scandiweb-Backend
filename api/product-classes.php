@@ -1,5 +1,11 @@
 <?php
     require_once('db.php');
+
+    if(basename($_SERVER['PHP_SELF']) == basename(__FILE__)){
+        http_response_code(403);
+        echo json_encode(array("message" => "Forbidden."));
+        return;
+    }
     class Product{
         protected $sku;
         protected $name;

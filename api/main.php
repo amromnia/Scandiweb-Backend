@@ -2,6 +2,8 @@
     require_once 'product-classes.php';
     require_once 'db.php';
 
+    /* Main Method, Only For Testing */
+
     //$dvd = new DVD("123", "test", 10, 100);
     //$chair = new Furniture("456", "test", 10, 100, 100, 100);
     //$book = new Book("789", "test", 10, 100);

@@ -1,11 +1,16 @@
 <?php
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: POST");
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET');
     header('Content-Type: application/json');
 
     require_once 'db.php';
     require_once 'product-classes.php';
 
+    if($_SERVER['REQUEST_METHOD'] != 'GET'){
+        http_response_code(405);
+        echo json_encode(array("message" => "Method not allowed."));
+        return;
+    }
 
     $db = new Database();
     $conn = $db->getConnection();

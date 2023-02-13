@@ -1,9 +1,16 @@
 <?php
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: POST");
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: POST');
     header('Content-Type: application/json');
 
     require_once 'product-classes.php';
+
+    // check if method is POST
+    if($_SERVER['REQUEST_METHOD'] != 'POST'){
+        http_response_code(405);
+        echo json_encode(array("message" => "Method not allowed."));
+        return;
+    }
 
     $data = json_decode(file_get_contents("php://input"));
     if(

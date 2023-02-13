@@ -1,5 +1,9 @@
 <?php
-// db class with simple, secure db connection
+    if(basename($_SERVER['PHP_SELF']) == basename(__FILE__)){
+        http_response_code(403);
+        echo json_encode(array("message" => "Forbidden."));
+        return;
+    }
     class Database{
         protected $conn = null;
         protected $servername = "localhost";
@@ -30,8 +34,6 @@
             $this->conn->close();
             $this->conn = null;
         }
-
-
     }
 
 
