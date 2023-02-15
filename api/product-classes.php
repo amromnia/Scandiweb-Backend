@@ -101,11 +101,22 @@
             $attributes = serialize($this->attributes);
             $stmt = $conn->prepare($query);
             $stmt->bind_param("ssds", $sku, $name, $price, $attributes);
-
-            if($stmt->execute()){
-                return true;
+            try{
+                if($stmt->execute()){
+                    if($stmt->affected_rows < 0){
+                        return -5;
+                    }
+                    return 0;
+                }
+                return -1;
             }
-            return false;
+            catch(Exception $e){
+                if($stmt->errno == 1062 || $stmt->affected_rows < 0){
+                    return -5;
+                }
+                return -2;
+            }
+
         }
         public static function deleteRecord($sku){
             $db = new Database();

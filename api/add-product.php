@@ -1,14 +1,21 @@
 <?php
     header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: POST');
+    header('Access-Control-Allow-Methods: POST, OPTIONS');
     header('Content-Type: application/json');
+    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
     require_once 'product-classes.php';
 
     // check if method is POST
-    if($_SERVER['REQUEST_METHOD'] != 'POST'){
+    if($_SERVER['REQUEST_METHOD'] != 'POST' && $_SERVER['REQUEST_METHOD'] != 'OPTIONS'){
         http_response_code(405);
         echo json_encode(array("message" => "Method not allowed."));
+        return;
+    }
+
+    // allow preflight
+    if($_SERVER['REQUEST_METHOD'] == 'OPTIONS'){
+        http_response_code(200);
         return;
     }
 
@@ -30,20 +37,18 @@
 
         $product = new product($sku, $name, $price, $attributes);
         $product = $product->getChild();
+        $result = $product->createRecord();
 
-        // create the product
-        if($product->createRecord()){
-            // set response code - 201 created
+        if($result == 0){
             http_response_code(201);
-            // tell the user
-            echo json_encode(array("message" => "Product was created."));
+            echo json_encode(array("message" => "Product was created.", "ErrorCode"=>0));
         }
-
-        // if unable to create the product, tell the user
+        else if($result == -5){
+            http_response_code(400);
+            echo json_encode(array("message" => "Unable to create product. Product with this SKU already exists.", "ErrorCode"=>-5));
+        }
         else{
-            // set response code - 503 service unavailable
             http_response_code(503);
-            // tell the user
-            echo json_encode(array("message" => "Unable to create product."));
+            echo json_encode(array("message" => "Unable to create product.", "ErrorCode"=>-1));
         }
 ?>
