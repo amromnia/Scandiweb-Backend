@@ -13,8 +13,10 @@
             header('Access-Control-Allow-Origin: *');
             //allow POST to delete for hosts that don't support DELETE (e.g. 000webhost)
             $method_string = $method;
+            $alternate_method = '';
             if($method == 'DELETE'){
                 $method_string .= ', POST';
+                $alternate_method = 'POST';
             }
             //allow OPTIONS for preflight
             $method_string.= ', OPTIONS';
@@ -22,7 +24,7 @@
             header('Content-Type: application/json');
             header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
 
-            if($_SERVER['REQUEST_METHOD'] != $method && $_SERVER['REQUEST_METHOD'] != 'OPTIONS'){
+            if($_SERVER['REQUEST_METHOD'] != $method && $_SERVER['REQUEST_METHOD'] != 'OPTIONS' && $_SERVER['REQUEST_METHOD'] != $alternate_method){
                 http_response_code(405);
                 echo json_encode(array("message" => "Method not allowed."));
                 return false;
